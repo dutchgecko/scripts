@@ -1,0 +1,32 @@
+#!/bin/dash
+
+DRIVES=`grep -o 'sd[a-e]' /proc/mdstat | sort`
+STRIPPED=`echo $DRIVES | sed 's/sd//g'`
+DRIVEPATHS=`echo $DRIVES | sed 's|sd|/dev/sd|g'`
+
+TEMPS=`nc localhost 7634`
+
+OUT=`echo $TEMPS | awk -F '|' -v DEVS="$DRIVEPATHS"  '
+    NR ==1 { NDEV = split(DEVS,DEV," ") ; if (NDEV < 1) exit(1) }
+
+    {
+	OUTSTRING = "";
+
+	for (i = 1 ; i <= NF ; i++)
+	{
+	    for (d = 1 ; d <= NDEV ; d++)
+	    {
+	    	if ($i == DEV[d])
+		{
+		    LETTER = toupper(substr(DEV[d],8,1));
+#		    OUTSTRING = OUTSTRING LETTER ":" $(i+2);
+	        OUTSTRING = OUTSTRING $(i+2) "\n"
+		}
+	    }
+	}
+    print OUTSTRING
+    }
+' -`
+
+#/bin/echo "#[bg=black]#[fg=white]{$OUT}#[bg=${BYOBU_DARK}]#[fg=${BYOBU_LIGHT}] #[default]"
+echo "$OUT"
