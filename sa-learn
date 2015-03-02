@@ -1,0 +1,6 @@
+#!/bin/sh
+
+#/usr/bin/sa-learn --ham /media/raid/mail/gecko/cur/*
+#/usr/bin/sa-learn --spam /media/raid/mail/gecko/.Junk/cur/*
+/usr/bin/sa-learn --spam /media/raid/mail/gecko/.Junk/cur/*a		# Learn from junk messages tagged as "Junk" in thunderbird
+
