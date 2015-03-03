@@ -2,8 +2,8 @@
 
 # pending upgrades
 set UPGRADES (/usr/lib/update-notifier/apt-check 2>&1)
-set UPGRADES_PENDING (echo $UPGRADES | cut -d ';' -f 2)
-set UPGRADES_SECURITY (echo $UPGRADES | cut -d ';' -f 1)
+set UPGRADES_PENDING (echo $UPGRADES | cut -d ';' -f 1)
+set UPGRADES_SECURITY (echo $UPGRADES | cut -d ';' -f 2)
 if begin
     [ $UPGRADES_PENDING -gt 0 ]
     or [ $UPGRADES_SECURITY -gt 0 ]
