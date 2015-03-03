@@ -9,6 +9,12 @@ STYLE_HIGHLIGHT='\033[33m'
 STYLE_WARN='\033[35m'
 STYLE_ALERT='\033[31m'
 
+# last logins
+echo -e "${STYLE_TITLE}Last logins${STYLE_NORMAL}"
+echo -e "${STYLE_INFO}User\tAddress\t\tLogged in\tLogged out${STYLE_DATA}"
+last -n 3 | awk '!/wtmp/ {$2=""; print $0}'
+echo -en "${STYLE_NORMAL}"
+
 # pending upgrades
 if [ -f /usr/lib/update-notifier/apt-check ]; then
     UPGRADES=`/usr/lib/update-notifier/apt-check 2>&1`
