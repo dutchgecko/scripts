@@ -43,7 +43,7 @@ if [ -e /dev/md0 ]; then
     echo -e "${STYLE_NORMAL}"
 
     #raid temps
-    if HDDTEMPS=`nc localhost 7634` && [ ! -z "$HDDTEMPS" ]; then
+    if HDDTEMPS=`nc localhost 7634` && [ -n "$HDDTEMPS" ]; then
         HDDS=`grep -o 'sd[a-z]' /proc/mdstat | sort`
         HDDSARR=($HDDS)
         HDDPATHS=`echo $HDDS | sed 's|sd|/dev/sd|g'`
