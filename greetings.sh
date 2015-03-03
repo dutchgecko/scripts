@@ -43,12 +43,34 @@ if [ -e /dev/md0 ]; then
     echo -e "${STYLE_NORMAL}"
 
     #raid temps
-    if [ -f ~/.scripts/hdtemps ]; then
+    if HDDTEMPS=`nc localhost 7634` && [ ! -z "$HDDTEMPS" ]; then
+        HDDS=`grep -o 'sd[a-z]' /proc/mdstat | sort`
+        HDDSARR=($HDDS)
+        HDDPATHS=`echo $HDDS | sed 's|sd|/dev/sd|g'`
+
+        TEMPLIST=`echo $HDDTEMPS | awk -F '|' -v DEVS="$HDDPATHS" '
+        NR==1 { NDEV = split(DEVS,DEV," ") ; if (NDEV < 1) exit(1) }
+        {
+            OUTSTRING = "";
+            for (i = 1; i <= NF; i++)
+            {
+                for (d = 1; d <= NDEV; d++)
+                {
+                    if ($i == DEV[d])
+                    {
+                        OUTSTRING = OUTSTRING $(i+2) "\n"
+                    }
+                }
+            }
+            print OUTSTRING
+        }
+        ' -`
+
         echo -e "${STYLE_TITLE}RAID temperatures${STYLE_NORMAL}"
-        HDDS=(`grep -o 'sd[a-z]' /proc/mdstat | sort`)
+
         COUNT=0
-        for HD in `~/.scripts/hdtemps`; do
-            echo -en "$STYLE_INFO${HDDS[COUNT]}: $STYLE_DATA$HD°C "
+        for HD in $TEMPLIST; do
+            echo -en "$STYLE_INFO${HDDSARR[COUNT]}: $STYLE_DATA$HD°C "
             COUNT=$((COUNT+1))
         done
         echo -e "${STYLE_NORMAL}\n"
