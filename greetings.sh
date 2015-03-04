@@ -8,6 +8,34 @@ STYLE_DATA='\033[36m'
 STYLE_HIGHLIGHT='\033[33m'
 STYLE_WARN='\033[35m'
 STYLE_ALERT='\033[31m'
+STYLE_LINE='\033[0;34m'
+
+# width of terminal, max 80
+COLUMNS=`tput cols`
+MAXWIDTH=80
+SCRIPTWIDTH=$((COLUMNS < MAXWIDTH ? COLUMNS : MAXWIDTH))
+
+# printable lines of SCRIPTWIDTH
+LINE="$STYLE_LINE"
+DOUBLELINE="$STYLE_LINE"
+for i in `seq 1 $SCRIPTWIDTH`; do
+    LINE="$LINE-"
+    DOUBLELINE="$DOUBLELINE="
+done
+LINE="$LINE$STYLE_NORMAL"
+DOUBLELINE="$DOUBLELINE$STYLE_NORMAL"
+
+echo -e $DOUBLELINE
+
+# hostname, in figlet if possible
+echo -en "${STYLE_WARN}"
+if hash figlet 2> /dev/null; then
+    echo ". : `hostname` : ." | figlet -c -w $SCRIPTWIDTH
+else
+    echo "Welcome to `hostname`\n"
+fi
+
+echo -e $DOUBLELINE
 
 # last logins
 echo -e "${STYLE_TITLE}Last logins${STYLE_NORMAL}"
