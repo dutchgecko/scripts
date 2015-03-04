@@ -32,7 +32,7 @@ echo -en "${STYLE_WARN}"
 if hash figlet 2> /dev/null; then
     echo ". : `hostname` : ." | figlet -c -w $SCRIPTWIDTH
 else
-    echo -e "Welcome to `hostname`\n"
+    echo -e "Welcome to `hostname`"
 fi
 
 echo -e $DOUBLELINE
@@ -59,7 +59,7 @@ if [ -f /usr/lib/update-notifier/apt-check ]; then
 fi
 
 # raid status
-if [ -e /dev/md0 ]; then
+if `grep 'md.' /proc/mdstat &> /dev/null`; then
 
     # check raid status
     echo -e "${STYLE_TITLE}RAID status${STYLE_NORMAL}"
