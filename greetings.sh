@@ -120,10 +120,12 @@ for DISK in $DISKS; do
     DISKLENGTH=$((DISKLENGTH > $THISLENGTH ? DISKLENGTH : $THISLENGTH))
 done
 for DISK in $DISKS; do
-    DISK_AVAIL=`df -h $DISK | awk '!/Used/ {print $4}'`
-    DISK_USAGE=`df -h $DISK | awk '!/Used/ {print $5}'`
-    printf "%b%${DISKLENGTH}s %bAvailable: %b%4s %bUsed: %b%3s\n" \
-        $STYLE_DATA $DISK $STYLE_INFO $STYLE_DATA $DISK_AVAIL $STYLE_INFO $STYLE_DATA $DISK_USAGE
+    DISK_AVAIL=`df -h $DISK 2> /dev/null | awk '!/Used/ {print $4}'`
+    DISK_USAGE=`df -h $DISK 2> /dev/null | awk '!/Used/ {print $5}'`
+    if [ -n "$DISK_AVAIL" ]; then
+        printf "%b%${DISKLENGTH}s %bAvailable: %b%4s %bUsed: %b%3s\n" \
+            $STYLE_DATA $DISK $STYLE_INFO $STYLE_DATA $DISK_AVAIL $STYLE_INFO $STYLE_DATA $DISK_USAGE
+    fi
 done
 echo -e "${STYLE_NORMAL}"
 
