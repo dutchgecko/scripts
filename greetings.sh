@@ -32,7 +32,7 @@ echo -en "${STYLE_WARN}"
 if hash figlet 2> /dev/null; then
     echo ". : `hostname` : ." | figlet -c -w $SCRIPTWIDTH
 else
-    echo "Welcome to `hostname`\n"
+    echo -e "Welcome to `hostname`\n"
 fi
 
 echo -e $DOUBLELINE
