@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# configurable options
+
+# list of mount points or partitions to include in disk size
+DISKS="/home /media/raid"
+# maximum width of fancy output (some output may still be wider)
+MAXWIDTH=80
+
 # colour escape codes
 STYLE_NORMAL='\033[0m'
 STYLE_TITLE='\033[1;4;37m'
@@ -12,7 +19,6 @@ STYLE_LINE='\033[0;34m'
 
 # width of terminal, max 80
 COLUMNS=`tput cols`
-MAXWIDTH=80
 SCRIPTWIDTH=$((COLUMNS < MAXWIDTH ? COLUMNS : MAXWIDTH))
 
 # printable lines of SCRIPTWIDTH
@@ -104,18 +110,28 @@ if `grep 'md.' /proc/mdstat &> /dev/null`; then
         echo -e "${STYLE_NORMAL}\n"
     fi
 
-    # raid space left
-    echo -e "${STYLE_TITLE}RAID usage${STYLE_NORMAL}"
-    RAID_AVAIL=`df -h /dev/md0 | awk '!/Used/ {print $4}'`
-    RAID_USAGE=`df -h /dev/md0 | awk '!/Used/ {print $5}'`
-    echo -e "${STYLE_INFO}Available: ${STYLE_DATA}${RAID_AVAIL} ${STYLE_INFO}Used: ${STYLE_DATA}${RAID_USAGE}"
-    echo -e "${STYLE_NORMAL}"
 fi
+
+# disk space left
+echo -e "${STYLE_TITLE}Disk usage${STYLE_NORMAL}"
+DISKLENGTH=0
+for DISK in $DISKS; do
+    THISLENGTH=`expr length $DISK`
+    DISKLENGTH=$((DISKLENGTH > $THISLENGTH ? DISKLENGTH : $THISLENGTH))
+done
+for DISK in $DISKS; do
+    DISK_AVAIL=`df -h $DISK | awk '!/Used/ {print $4}'`
+    DISK_USAGE=`df -h $DISK | awk '!/Used/ {print $5}'`
+    printf "%b%${DISKLENGTH}s %bAvailable: %b%4s %bUsed: %b%3s\n" \
+        $STYLE_DATA $DISK $STYLE_INFO $STYLE_DATA $DISK_AVAIL $STYLE_INFO $STYLE_DATA $DISK_USAGE
+done
+echo -e "${STYLE_NORMAL}"
 
 # Is the internet on fire status reports
 echo -e "${STYLE_TITLE}Is the internet on fire?${STYLE_NORMAL}${STYLE_HIGHLIGHT}"
-host -t txt istheinternetonfire.com | cut -f 2 -d '"' | sed 's/^/ • /' | sed 's/\\\;/\n\n •/' | fmt
+host -t txt istheinternetonfire.com | cut -f 2 -d '"' | sed 's/^/ • /' | sed 's/\\\;/\n\n •/' | fmt -w $SCRIPTWIDTH
 echo -e "${STYLE_NORMAL}"
 
 echo -e "${STYLE_INFO}Press Enter to continue...${STYLE_NORMAL}"
+read
 
