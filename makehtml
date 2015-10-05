@@ -12,6 +12,17 @@ ISCYGWIN=1
 
 cat > "$CSSFILE" << 'CSSEOF'
 <style type="text/css">
+body {
+    margin: 20px 60px;
+    font-family: sans-serif;
+}
+
+blockquote {
+    border-left: #004499 solid 6px;
+    padding-left: 0.5em;
+    margin-left: 2em;
+}
+
 div#TOC {
     border: #004499 dotted 2px;
     width: auto;
@@ -28,9 +39,16 @@ if [[ $(uname -s) == CYGWIN* ]]; then
     ISCYGWIN=0
 fi
 
-pandoc "$1" --standalone --include-in-header="$CSSINCLUDE" --highlight-style pygments --toc --output="$NEWFILENAME"
+pandoc "$1" --standalone \
+    --include-in-header="$CSSINCLUDE" --toc \
+    --highlight-style pygments \
+    --output="$NEWFILENAME"
 
-if [ $? ]; then
+PANDOCSUCCESS=$?
+
+rm $CSSFILE
+
+if [ $PANDOCSUCCESS ]; then
     if [ $ISCYGWIN ]; then
         cygstart "$NEWFILENAME"
     elif [[ $(hash xdg-open 2> /dev/null) && -z $DISPLAY ]]; then
