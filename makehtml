@@ -1,0 +1,6 @@
+#!/bin/bash
+
+newfilename=`echo -n "$1" | sed -e 's/.md$/.html/'`
+pandoc "$1" -s --highlight-style pygments --toc -o "$newfilename" \
+&& cygstart "$newfilename"
+
