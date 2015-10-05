@@ -23,6 +23,18 @@ blockquote {
     margin-left: 2em;
 }
 
+h1, h2, h3, h4, h5, h6, h7 {
+    color: #004499;
+}
+
+li {
+    padding: 0.15em 0;
+}
+
+a {
+    color: #004499;
+}
+
 div#TOC {
     border: #004499 dotted 2px;
     width: auto;
