@@ -1,6 +1,40 @@
 #!/bin/bash
 
-newfilename=`echo -n "$1" | sed -e 's/.md$/.html/'`
-pandoc "$1" -s --highlight-style pygments --toc -o "$newfilename" \
-&& cygstart "$newfilename"
+if ! hash pandoc 2> /dev/null; then
+    echo "Pandoc does not appear to be installed"
+    exit 1
+fi
+
+NEWFILENAME=`echo -n "$1" | sed -e 's/.md$/.html/'`
+CSSFILE=`mktemp`
+CSSINCLUDE="$CSSFILE"
+ISCYGWIN=1
+
+cat > "$CSSFILE" << 'CSSEOF'
+<style type="text/css">
+div#TOC {
+    border: #004499 dotted 2px;
+    width: auto;
+    margin: 10px;
+    display: table;
+    padding: 10px 30px 10px 10px;
+    background-color: #eef8ff;
+}
+</style>
+CSSEOF
+
+if [[ $(uname -s) == CYGWIN* ]]; then
+    CSSINCLUDE=`cygpath -w "$CSSFILE"`
+    ISCYGWIN=0
+fi
+
+pandoc "$1" --standalone --include-in-header="$CSSINCLUDE" --highlight-style pygments --toc --output="$NEWFILENAME"
+
+if [ $? ]; then
+    if [ $ISCYGWIN ]; then
+        cygstart "$NEWFILENAME"
+    elif [[ $(hash xdg-open 2> /dev/null) && -z $DISPLAY ]]; then
+        xdg-open "$NEWFILENAME"
+    fi
+fi
 
