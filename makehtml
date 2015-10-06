@@ -35,6 +35,10 @@ a {
     color: #004499;
 }
 
+p code {
+    font-size: 1.21em;
+}
+
 div#TOC {
     border: #004499 dotted 2px;
     width: auto;
