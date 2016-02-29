@@ -47,6 +47,31 @@ div#TOC {
     padding: 10px 30px 10px 10px;
     background-color: #eef8ff;
 }
+
+table {
+    margin: 10px;
+    border-collapse: collapse;
+}
+
+table thead tr {
+    border-bottom: #004499 solid 5px;
+}
+
+table thead tr th {
+    font-weight: heavy;
+    border: #004499 solid 1px;
+    padding: 5px 5px 2px 5px;
+}
+
+table tbody tr td {
+    border: #004499 solid 1px;
+    padding: 4px;
+}
+
+table tbody tr.odd {
+    background-color: #eef8ff;
+}
+
 </style>
 CSSEOF
 
